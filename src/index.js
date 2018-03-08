@@ -1,6 +1,13 @@
 'use strict'
 
 const Merkling = require('merkling')
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
+const {promisify} = require('util')
+
+const readFile = promisify(fs.readFile)
+const writeFile = promisify(fs.writeFile)
 
 class Feed {
   constructor ({ name, permawit }) {
@@ -17,7 +24,7 @@ class Feed {
   }
 
   feedAsyncIterator () {
-    const feedHash = this.permawit.feeds[this.name]
+    const feedHash = this.permawit.store.getFeedSync(this.name)
     let started = false
     let nextEntry = null
     let permawit = this.permawit
@@ -49,11 +56,8 @@ class Feed {
         }
       },
       return () {
-        // Release the lock if the iterator terminates.
         return {}
       },
-      // for-await calls this on whatever it's passed, so
-      // iterators tend to return themselves.
       [Symbol.asyncIterator] () {
         return this
       }
@@ -61,11 +65,50 @@ class Feed {
   }
 }
 
+class PermawitFilestore {
+  constructor ({ root }) {
+    this.rootDir = path.join(os.homedir(), '.permawit')
+    this.storeFile = path.join(this.rootDir, 'store.json')
+  }
+
+  async init () {
+    if (!fs.existsSync(this.rootDir)) {
+      fs.mkdirSync(this.rootDir)
+    }
+
+    if (!fs.existsSync(this.storeFile)) {
+      const json = JSON.stringify({
+        version: 1,
+        feeds: {}
+      })
+      await writeFile(this.storeFile, json, 'utf8')
+    }
+  }
+
+  async setFeed (name, ipfsHash) {
+    var config = JSON.parse(await readFile(this.storeFile))
+    config.feeds[name] = ipfsHash
+    await writeFile(this.storeFile, JSON.stringify(config), 'utf8')
+  }
+
+  async getFeed (name) {
+    var config = JSON.parse(await readFile(this.storeFile))
+    return config.feeds[name]
+  }
+
+  getFeedSync (name) {
+    var config = JSON.parse(fs.readFileSync(this.storeFile))
+    return config.feeds[name]
+  }
+}
+
 class Permawit {
-  constructor ({ ipfs }) {
+  constructor ({ ipfs, store }) {
     if (ipfs === undefined) {
       throw Error('ipfs must be passed as an option')
     }
+
+    this.store = store
 
     this.merkling = new Merkling({ipfs: ipfs})
     this.feeds = []
@@ -77,13 +120,15 @@ class Permawit {
       entries: null
     })
 
-    this.feeds[name] = feedHead._cid.toBaseEncodedString()
+    this.store.setFeed(name, feedHead._cid.toBaseEncodedString())
 
     return new Feed({ name, permawit: this })
   }
 
   async post ({ feed, text }) {
-    const feedHead = await this.merkling.get(this.feeds[feed])
+    const feedHeadHash = await this.store.getFeed(feed)
+    console.log(feedHeadHash)
+    const feedHead = await this.merkling.get(feedHeadHash)
 
     const previousEntry = feedHead.entries
 
@@ -94,13 +139,15 @@ class Permawit {
 
     await this.merkling.save(feedHead)
 
-    this.feeds[feed] = feedHead._cid.toBaseEncodedString()
+    this.store.setFeed(feed, feedHead._cid.toBaseEncodedString())
+
+    // this.feeds[feed] = feedHead._cid.toBaseEncodedString()
   }
 
   async posts (feed, callback) {
-    const feedHead = await this.merkling.get(this.feeds[feed])
+    const feedHeadHash = await this.store.getFeed(feed)
+    const feedHead = await this.merkling.get(feedHeadHash) // this.merkling.get(this.feeds[feed])
 
-    console.log(feedHead)
     let currentEntry = feedHead.entries
 
     while (currentEntry !== null) {
@@ -110,5 +157,7 @@ class Permawit {
     }
   }
 }
+
+Permawit.Filestore = PermawitFilestore
 
 module.exports = Permawit
