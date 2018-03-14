@@ -4,7 +4,8 @@
   "description": "IPLD microblog datastructure",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "standard",
+    "dev": "concurrently --kill-others \"browser-sync start --server --serveStatic dist --files \"dist\\*\"\" \"webpack --watch\""
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,12 @@
   },
   "homepage": "https://github.com/kanej/permawit#readme",
   "devDependencies": {
+    "browser-sync": "^2.23.6",
+    "concurrently": "^3.5.1",
     "cz-conventional-changelog": "^2.1.0",
-    "standard": "^11.0.0"
+    "standard": "^11.0.0",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11"
   },
   "config": {
     "commitizen": {

@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Getting Started</title>
+    <script src="https://unpkg.com/lodash@4.16.6"></script>
+    <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+  </head>
+  <body>
+      <h1>Permawit Test Page</h1>
+      <script src="./permawit.js"></script>
+      <script>
+        var node = new Ipfs()
+
+        node.on('start', async () => {
+          window.wit = new Permawit({ ipfs: node })
+          await window.wit.init()
+
+          const feed = await window.wit.createFeed({ name: 'example' })
+          await feed.post({ text: 'Some example text' })
+          await feed.post({ text: 'More text' })
+          await window.wit.posts('example', (post) => { console.log(post) })
+
+        })
+      </script>
+  </body>
+</html>

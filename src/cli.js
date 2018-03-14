@@ -4,12 +4,13 @@ const path = require('path')
 const yargs = require('yargs')
 
 const Permawit = require('../src/index')
+const Filestore = require('../src/stores/fileStore')
 // const IPFS = require('ipfs')
 
 const { withIpfs } = require('../src/ipfsHelpers')
 
 const withWit = async (callback) => {
-  const store = new Permawit.Filestore({
+  const store = new Filestore({
     root: '~/.permawit'
   })
 
