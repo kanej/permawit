@@ -22,6 +22,7 @@ TODO: Fill out this long description.
 ## Usage
 
 ```
+node --harmony_async_iteration --trace-warnings .\scratch.js
 ```
 
 ## Maintainers
