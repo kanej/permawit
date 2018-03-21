@@ -5,7 +5,7 @@ const yargs = require('yargs')
 
 const Permawit = require('../src/index')
 const Filestore = require('../src/stores/fileStore')
-// const IPFS = require('ipfs')
+const IPFS = require('ipfs')
 
 const { withIpfs } = require('../src/ipfsHelpers')
 

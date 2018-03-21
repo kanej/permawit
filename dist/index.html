@@ -1,26 +1,47 @@
 <!doctype html>
 <html>
   <head>
-    <title>Getting Started</title>
+    <title>Permawit</title>
     <script src="https://unpkg.com/lodash@4.16.6"></script>
     <script src="https://unpkg.com/ipfs/dist/index.js"></script>
+    <script src="https://unpkg.com/ipfs-api/dist/index.js"></script>
   </head>
   <body>
       <h1>Permawit Test Page</h1>
+      <main>
+        <div class="posts">
+
+        </div>
+      </main>
       <script src="./permawit.js"></script>
       <script>
-        var node = new Ipfs()
+        
+        (async () => {
+          var node = new Ipfs()
+          //var node = window.IpfsApi('/ip4/127.0.0.1/tcp/5001')
 
-        node.on('start', async () => {
-          window.wit = new Permawit({ ipfs: node })
-          await window.wit.init()
 
-          const feed = await window.wit.createFeed({ name: 'example' })
-          await feed.post({ text: 'Some example text' })
-          await feed.post({ text: 'More text' })
-          await window.wit.posts('example', (post) => { console.log(post) })
+          node.on('start', async () => {
+            await node.swarm.connect('/ip4/127.0.0.1/tcp/9999/ws/ipfs/QmRJepitjCzY3eN22mXojCZTpZNrEGnPdjKxrpR9nxsDq2')
+            window.wit = new Permawit({ ipfs: node })
+            await window.wit.init()
 
-        })
+            //const feed = await window.wit.createFeed({ name: 'example' })
+            //await feed.post({ text: 'Some example text' })
+            //await feed.post({ text: 'More text' })
+            //await window.wit.posts('example', (post) => { console.log(post) })
+            
+            const feed = await window.wit.loadFeed({ cid: 'zdpuAqqmRH5FkZmsuWbopTpaXVDQ7PQyNDCd4GwHX6r17W7eU' })
+            
+            var postsDiv = document.getElementsByClassName('posts')[0]
+
+            for await (var post of feed) {
+              const html = _.template('<div><p><%= text %></p></div>')({text: post})
+              postsDiv.insertAdjacentHTML( 'beforeend', html )
+            }
+          })
+        })()
+        
       </script>
   </body>
 </html>
