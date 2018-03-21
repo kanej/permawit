@@ -15,9 +15,11 @@ class Permawit {
       }
     }
 
+    this.ipfs = ipfs
+
     this.store = store || new LocalStore()
 
-    this.merkling = new Merkling({ipfs: ipfs})
+    this.merkling = new Merkling({ ipfs })
     this.feeds = []
   }
 
@@ -46,6 +48,7 @@ class Permawit {
 
   async post ({ feed, text }) {
     const feedHeadHash = await this.store.getFeed(feed)
+    console.log(feedHeadHash)
     const feedHead = await this.merkling.get(feedHeadHash)
 
     const previousEntry = feedHead.entries

@@ -36,7 +36,9 @@
   },
   "dependencies": {
     "ipfs": "^0.27.7",
+    "ipfs-api": "^18.2.0",
     "merkling": "^1.1.0",
+    "pinhorse": "^1.0.0",
     "yargs": "^11.0.0"
   }
 }

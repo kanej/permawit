@@ -3,9 +3,12 @@
 const path = require('path')
 const yargs = require('yargs')
 
+const IPFS = require('ipfs')
+var ipfsAPI = require('ipfs-api')
+const Pinhorse = require('pinhorse')
+
 const Permawit = require('../src/index')
 const Filestore = require('../src/stores/fileStore')
-const IPFS = require('ipfs')
 
 const { withIpfs } = require('../src/ipfsHelpers')
 
@@ -92,6 +95,30 @@ yargs
         await wit.posts(argv.feed, post => {
           console.log(post)
         })
+      })
+    }
+  })
+  .command({
+    command: 'publish [feed]',
+    desc: 'publish a feed',
+    builder: (yargs) => yargs
+      .option('feed', {
+        describe: 'name of the feed to create',
+        demandOption: true
+      }),
+    handler: async (argv) => {
+      console.log(`Publishing feed ${argv.feed} to localhost:5001`)
+
+      var remote = ipfsAPI('localhost', '5001', { protocol: 'http' })
+
+      await withWit(async (wit) => {
+        var pinhorse = new Pinhorse({ local: wit.ipfs, remote })
+
+        const feedHeadHash = await wit.store.getFeed(argv.feed)
+
+        var response = await pinhorse.pin(feedHeadHash)
+
+        console.log(response[0].hash)
       })
     }
   })
