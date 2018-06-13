@@ -3,7 +3,6 @@
 const path = require('path')
 const yargs = require('yargs')
 
-const IPFS = require('ipfs')
 var ipfsAPI = require('ipfs-api')
 const Pinhorse = require('pinhorse')
 

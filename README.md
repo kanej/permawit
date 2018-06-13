@@ -21,6 +21,33 @@ TODO: Fill out this long description.
 
 ## Usage
 
+The hoped for usage is something like:
+
+```bash
+> permawit post --message "Hello World"
+
+>   Enter Name of New Feed: Thoughts on a distributed web
+>   Enter user name: kanej
+
+>   Feed "Thoughts on a distibuted web" created at /ipns/xxxxxxxxxxxxx
+
+> permawit post --message "Another insightful comment, lacking sarcasm and vitriol"
+> permawit follow /ipns/yyyyyyyyyyyyy
+> permawit show
+    author: yyyy timestamp: 24/03/2018 09:15
+
+    A critical response to another post in a tone of respectful conversation
+
+    author: kanej timestamp 24/03/2018 08:58
+
+    Hello World
+
+    author: yyyy timestamp: 24/03/2018 08:49
+
+    Inevitable hot take
+```
+
+
 ```
 node --harmony_async_iteration --trace-warnings .\scratch.js
 ```

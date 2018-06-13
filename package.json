@@ -4,7 +4,7 @@
   "description": "IPLD microblog datastructure",
   "main": "index.js",
   "scripts": {
-    "test": "standard",
+    "test": "standard src/**/*.js",
     "dev": "concurrently --kill-others \"browser-sync start --server --serveStatic dist --files \"dist\\*\"\" \"webpack --watch\""
   },
   "repository": {
