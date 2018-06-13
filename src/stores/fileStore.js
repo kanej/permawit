@@ -43,6 +43,13 @@ class PermawitFilestore {
     var config = JSON.parse(fs.readFileSync(this.storeFile))
     return config.feeds[name]
   }
+
+  async listFeeds () {
+    var config = JSON.parse(await readFile(this.storeFile))
+    var feedNames = Object.keys(config.feeds || {})
+
+    return feedNames
+  }
 }
 
 module.exports = PermawitFilestore

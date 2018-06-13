@@ -121,5 +121,24 @@ yargs
       })
     }
   })
+  .command({
+    command: 'list',
+    desc: 'list local feeds',
+    handler: async (argv) => {
+      await withWit(async (wit) => {
+        const feedNames = await wit.store.listFeeds()
+
+        if (!feedNames || feedNames.length === 0) {
+          console.log('No feeds')
+        } else {
+          console.log('Feeds')
+          console.log('-----')
+          for (const feedName of feedNames) {
+            console.log(feedName)
+          }
+        }
+      })
+    }
+  })
   .help()
   .argv
