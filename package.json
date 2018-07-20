@@ -1,6 +1,6 @@
 {
   "name": "permawit",
-  "version": "0.0.1-development",
+  "version": "0.0.2-development",
   "description": "IPLD microblog datastructure",
   "main": "src/index.js",
   "scripts": {
@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "ipfs": "^0.27.7",
+    "ipfs": "^0.30.1",
     "ipfs-api": "^18.2.0",
     "merkling": "^1.1.0",
     "pinhorse": "^1.0.0",
