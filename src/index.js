@@ -48,7 +48,6 @@ class Permawit {
 
   async post ({ feed, text }) {
     const feedHeadHash = await this.store.getFeed(feed)
-    console.log(feedHeadHash)
     const feedHead = await this.merkling.get(feedHeadHash)
 
     const previousEntry = feedHead.entries
@@ -60,9 +59,10 @@ class Permawit {
 
     await this.merkling.save(feedHead)
 
-    this.store.setFeed(feed, feedHead._cid.toBaseEncodedString())
+    const updatedCid = feedHead._cid.toBaseEncodedString()
+    this.store.setFeed(feed, updatedCid)
 
-    // this.feeds[feed] = feedHead._cid.toBaseEncodedString()
+    return updatedCid
   }
 
   async posts (feed, callback) {
