@@ -46,6 +46,16 @@ class Permawit {
     return new Feed({ name: feedHead.name, permawit: this })
   }
 
+  async getFeed (feedName) {
+    const feedHeadHash = await this.store.getFeed(feedName)
+
+    if (!feedHeadHash) {
+      return null
+    }
+
+    return new Feed({ name: feedName, permawit: this })
+  }
+
   async post ({ feed, text }) {
     const feedHeadHash = await this.store.getFeed(feed)
     const feedHead = await this.merkling.get(feedHeadHash)
