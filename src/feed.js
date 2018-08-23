@@ -10,6 +10,10 @@ class Feed {
     return this.permawit.post({ feed: this.name, text })
   }
 
+  async getFeedHash () {
+    return this.permawit.store.getFeedSync(this.name)
+  }
+
   [Symbol.asyncIterator] () {
     return this.feedAsyncIterator()
   }

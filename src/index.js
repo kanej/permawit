@@ -27,9 +27,10 @@ class Permawit {
     await this.store.init()
   }
 
-  async createFeed ({ name }) {
+  async createFeed ({ name, author }) {
     const feedHead = await this.merkling.save({
       name: name,
+      author: author,
       entries: null
     })
 
