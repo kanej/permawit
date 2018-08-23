@@ -14,6 +14,13 @@ class Feed {
     return this.permawit.store.getFeedSync(this.name)
   }
 
+  async getMetadata () {
+    const feedHash = this.permawit.store.getFeedSync(this.name)
+    const {author} = await this.permawit.merkling.get(feedHash)
+
+    return {author, hash: feedHash}
+  }
+
   [Symbol.asyncIterator] () {
     return this.feedAsyncIterator()
   }
