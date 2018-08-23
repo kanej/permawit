@@ -1,6 +1,6 @@
 {
   "name": "permawit",
-  "version": "0.0.5-development",
+  "version": "0.0.6-development",
   "description": "IPLD microblog datastructure",
   "main": "src/index.js",
   "scripts": {
